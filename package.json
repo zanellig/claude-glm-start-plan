@@ -1,0 +1,11 @@
+{
+  "name": "claude-glm-start-plan",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Run Claude Code with GLM models from a signed-in ZCode Start allowance",
+  "engines": { "node": ">=22" },
+  "bin": { "claude-glm": "bin/claude-glm.mjs", "zcode": "bin/zcode.mjs" },
+  "scripts": { "test": "node --test", "start": "node bin/claude-glm.mjs" },
+  "license": "Apache-2.0"
+}

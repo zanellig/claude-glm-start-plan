@@ -1,0 +1,36 @@
+
+ ▐▛███▛█   Claude Code v2.1.314
+▝▜██████▀  GLM-5.3-Flash (Start) with high effort · API Usage Billing
+ ▝▝   ▝▝   ~/projects/claude-glm-start-plan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+   Select model
+   Switch between Claude models. Your pick becomes the default for new sessions. For other/previous model
+   names, specify with --model.
+
+     1. Default (recommended)    Use the default model (currently GLM-5.3[1m])
+   ❯ 2. GLM-5.3-Flash (Start) ✔  Start allowance | low / high / max reasoning
+     3. GLM-5.3 (Start)          Start allowance | low / high / max reasoning
+
+   ● High effort (default) ←/→ to adjust
+
+   Enter to set as default · s to use this session only · Esc to cancel

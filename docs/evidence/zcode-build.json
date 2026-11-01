@@ -1,0 +1,441 @@
+{
+  "source": "https://github.com/zai-org/ZCode",
+  "commit": "a60ba6a7e5a06742270ca605f5d2cc2766afa7e1",
+  "cliVersion": "0.17.1",
+  "desktopSourceVersion": "3.17.1",
+  "runtimeNode": "24.22.1",
+  "packageManager": "pnpm 10.33.2",
+  "cliSha256": "2e4e7743111a79463440aacd1ba8c5df03a30608b977cb91ba2da048adc3e29f",
+  "packages": [
+    {
+      "name": "@zcode/tui",
+      "version": "0.1.0",
+      "path": "apps/zcode-cli/packages/tui"
+    },
+    {
+      "name": "@shikijs/core",
+      "version": "4.1.0",
+      "path": "apps/zcode-cli/packages/tui/node_modules/@shikijs/core"
+    },
+    {
+      "name": "shiki",
+      "version": "4.1.0",
+      "path": "apps/zcode-cli/packages/tui/node_modules/shiki"
+    },
+    {
+      "name": "ws",
+      "version": "8.18.0",
+      "path": "apps/zcode-cli/packages/tui/node_modules/ws"
+    },
+    {
+      "name": "@mbears/opentui-core",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core"
+    },
+    {
+      "name": "@mbears/opentui-core-darwin-arm64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-darwin-arm64"
+    },
+    {
+      "name": "@mbears/opentui-core-darwin-x64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-darwin-x64"
+    },
+    {
+      "name": "@mbears/opentui-core-linux-arm64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-linux-arm64"
+    },
+    {
+      "name": "@mbears/opentui-core-linux-x64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-linux-x64"
+    },
+    {
+      "name": "@mbears/opentui-core-win32-arm64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-win32-arm64"
+    },
+    {
+      "name": "@mbears/opentui-core-win32-x64",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-core-win32-x64"
+    },
+    {
+      "name": "ansi-regex",
+      "version": "6.2.2",
+      "path": "node_modules/@mbears/opentui-core/node_modules/ansi-regex"
+    },
+    {
+      "name": "emoji-regex",
+      "version": "10.6.0",
+      "path": "node_modules/@mbears/opentui-core/node_modules/emoji-regex"
+    },
+    {
+      "name": "marked",
+      "version": "17.0.1",
+      "path": "node_modules/@mbears/opentui-core/node_modules/marked"
+    },
+    {
+      "name": "string-width",
+      "version": "7.2.0",
+      "path": "node_modules/@mbears/opentui-core/node_modules/string-width"
+    },
+    {
+      "name": "strip-ansi",
+      "version": "7.2.0",
+      "path": "node_modules/@mbears/opentui-core/node_modules/string-width/node_modules/strip-ansi"
+    },
+    {
+      "name": "strip-ansi",
+      "version": "7.1.2",
+      "path": "node_modules/@mbears/opentui-core/node_modules/strip-ansi"
+    },
+    {
+      "name": "@mbears/opentui-react",
+      "version": "0.2.15",
+      "path": "node_modules/@mbears/opentui-react"
+    },
+    {
+      "name": "@shikijs/engine-javascript",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/engine-javascript"
+    },
+    {
+      "name": "oniguruma-to-es",
+      "version": "4.3.6",
+      "path": "node_modules/@shikijs/engine-javascript/node_modules/oniguruma-to-es"
+    },
+    {
+      "name": "@shikijs/engine-oniguruma",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/engine-oniguruma"
+    },
+    {
+      "name": "@shikijs/langs",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/langs"
+    },
+    {
+      "name": "@shikijs/primitive",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/primitive"
+    },
+    {
+      "name": "@shikijs/themes",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/themes"
+    },
+    {
+      "name": "@shikijs/types",
+      "version": "4.1.0",
+      "path": "node_modules/@shikijs/types"
+    },
+    {
+      "name": "@shikijs/vscode-textmate",
+      "version": "10.0.2",
+      "path": "node_modules/@shikijs/vscode-textmate"
+    },
+    {
+      "name": "@types/hast",
+      "version": "3.0.4",
+      "path": "node_modules/@types/hast"
+    },
+    {
+      "name": "@types/mdast",
+      "version": "4.0.4",
+      "path": "node_modules/@types/mdast"
+    },
+    {
+      "name": "@types/unist",
+      "version": "3.0.3",
+      "path": "node_modules/@types/unist"
+    },
+    {
+      "name": "@ungap/structured-clone",
+      "version": "1.3.0",
+      "path": "node_modules/@ungap/structured-clone"
+    },
+    {
+      "name": "bun-ffi-structs",
+      "version": "0.2.2",
+      "path": "node_modules/bun-ffi-structs"
+    },
+    {
+      "name": "ccount",
+      "version": "2.0.1",
+      "path": "node_modules/ccount"
+    },
+    {
+      "name": "character-entities-html4",
+      "version": "2.1.0",
+      "path": "node_modules/character-entities-html4"
+    },
+    {
+      "name": "character-entities-legacy",
+      "version": "3.0.0",
+      "path": "node_modules/character-entities-legacy"
+    },
+    {
+      "name": "comma-separated-tokens",
+      "version": "2.0.3",
+      "path": "node_modules/comma-separated-tokens"
+    },
+    {
+      "name": "dequal",
+      "version": "2.0.3",
+      "path": "node_modules/dequal"
+    },
+    {
+      "name": "devlop",
+      "version": "1.1.0",
+      "path": "node_modules/devlop"
+    },
+    {
+      "name": "diff",
+      "version": "9.0.0",
+      "path": "node_modules/diff"
+    },
+    {
+      "name": "get-east-asian-width",
+      "version": "1.5.0",
+      "path": "node_modules/get-east-asian-width"
+    },
+    {
+      "name": "hast-util-to-html",
+      "version": "9.0.5",
+      "path": "node_modules/hast-util-to-html"
+    },
+    {
+      "name": "hast-util-whitespace",
+      "version": "3.0.0",
+      "path": "node_modules/hast-util-whitespace"
+    },
+    {
+      "name": "html-void-elements",
+      "version": "3.0.0",
+      "path": "node_modules/html-void-elements"
+    },
+    {
+      "name": "koffi",
+      "version": "2.15.6",
+      "path": "node_modules/koffi"
+    },
+    {
+      "name": "cnoke",
+      "version": "4.0.3",
+      "path": "node_modules/koffi/src/cnoke"
+    },
+    {
+      "name": "KoffiConfig",
+      "version": "1.0.0",
+      "path": "node_modules/koffi/src/koffi/examples/electron-builder"
+    },
+    {
+      "name": "KoffiConfig",
+      "version": "1.0.0",
+      "path": "node_modules/koffi/src/koffi/examples/electron-forge"
+    },
+    {
+      "name": "KoffiConfig",
+      "version": "1.0.0",
+      "path": "node_modules/koffi/src/koffi/examples/node-esbuild"
+    },
+    {
+      "name": "KoffiConfig",
+      "version": "1.0.0",
+      "path": "node_modules/koffi/src/koffi/examples/nwjs/src"
+    },
+    {
+      "name": "KoffiConfig",
+      "version": "1.0.0",
+      "path": "node_modules/koffi/src/koffi/examples/yao-pkg"
+    },
+    {
+      "name": "node-addon-api",
+      "version": "8.5.0",
+      "path": "node_modules/koffi/vendor/node-addon-api"
+    },
+    {
+      "name": "addon",
+      "version": "0.0.0",
+      "path": "node_modules/koffi/vendor/node-addon-api/test/addon_build/tpl"
+    },
+    {
+      "name": "addon",
+      "version": "0.0.0",
+      "path": "node_modules/koffi/vendor/node-addon-api/test/require_basic_finalizers/tpl"
+    },
+    {
+      "name": "node-api-headers",
+      "version": "1.8.0",
+      "path": "node_modules/koffi/vendor/node-api-headers"
+    },
+    {
+      "name": "mdast-util-to-hast",
+      "version": "13.2.1",
+      "path": "node_modules/mdast-util-to-hast"
+    },
+    {
+      "name": "micromark-util-character",
+      "version": "2.1.1",
+      "path": "node_modules/micromark-util-character"
+    },
+    {
+      "name": "micromark-util-encode",
+      "version": "2.0.1",
+      "path": "node_modules/micromark-util-encode"
+    },
+    {
+      "name": "micromark-util-sanitize-uri",
+      "version": "2.0.1",
+      "path": "node_modules/micromark-util-sanitize-uri"
+    },
+    {
+      "name": "micromark-util-symbol",
+      "version": "2.0.1",
+      "path": "node_modules/micromark-util-symbol"
+    },
+    {
+      "name": "micromark-util-types",
+      "version": "2.0.2",
+      "path": "node_modules/micromark-util-types"
+    },
+    {
+      "name": "node-gyp-build",
+      "version": "4.8.4",
+      "path": "node_modules/node-gyp-build"
+    },
+    {
+      "name": "oniguruma-parser",
+      "version": "0.12.2",
+      "path": "node_modules/oniguruma-parser"
+    },
+    {
+      "name": "playwright-core",
+      "version": "1.59.1",
+      "path": "node_modules/playwright-core"
+    },
+    {
+      "name": "property-information",
+      "version": "7.1.0",
+      "path": "node_modules/property-information"
+    },
+    {
+      "name": "react",
+      "version": "19.2.7",
+      "path": "node_modules/react"
+    },
+    {
+      "name": "react-devtools-core",
+      "version": "7.0.1",
+      "path": "node_modules/react-devtools-core"
+    },
+    {
+      "name": "ws",
+      "version": "7.5.11",
+      "path": "node_modules/react-devtools-core/node_modules/ws"
+    },
+    {
+      "name": "react-reconciler",
+      "version": "0.33.0",
+      "path": "node_modules/react-reconciler"
+    },
+    {
+      "name": "regex",
+      "version": "6.1.0",
+      "path": "node_modules/regex"
+    },
+    {
+      "name": "regex-recursion",
+      "version": "6.0.2",
+      "path": "node_modules/regex-recursion"
+    },
+    {
+      "name": "regex-utilities",
+      "version": "2.3.0",
+      "path": "node_modules/regex-utilities"
+    },
+    {
+      "name": "scheduler",
+      "version": "0.27.0",
+      "path": "node_modules/scheduler"
+    },
+    {
+      "name": "shell-quote",
+      "version": "1.8.3",
+      "path": "node_modules/shell-quote"
+    },
+    {
+      "name": "space-separated-tokens",
+      "version": "2.0.2",
+      "path": "node_modules/space-separated-tokens"
+    },
+    {
+      "name": "stringify-entities",
+      "version": "4.0.4",
+      "path": "node_modules/stringify-entities"
+    },
+    {
+      "name": "trim-lines",
+      "version": "3.0.1",
+      "path": "node_modules/trim-lines"
+    },
+    {
+      "name": "unist-util-is",
+      "version": "6.0.1",
+      "path": "node_modules/unist-util-is"
+    },
+    {
+      "name": "unist-util-position",
+      "version": "5.0.0",
+      "path": "node_modules/unist-util-position"
+    },
+    {
+      "name": "unist-util-stringify-position",
+      "version": "4.0.0",
+      "path": "node_modules/unist-util-stringify-position"
+    },
+    {
+      "name": "unist-util-visit",
+      "version": "5.1.0",
+      "path": "node_modules/unist-util-visit"
+    },
+    {
+      "name": "unist-util-visit-parents",
+      "version": "6.0.2",
+      "path": "node_modules/unist-util-visit-parents"
+    },
+    {
+      "name": "unsafe-pointer",
+      "version": "0.2.0",
+      "path": "node_modules/unsafe-pointer"
+    },
+    {
+      "name": "vfile",
+      "version": "6.0.3",
+      "path": "node_modules/vfile"
+    },
+    {
+      "name": "vfile-message",
+      "version": "4.0.3",
+      "path": "node_modules/vfile-message"
+    },
+    {
+      "name": "web-tree-sitter",
+      "version": "0.25.10",
+      "path": "node_modules/web-tree-sitter"
+    },
+    {
+      "name": "yoga-layout",
+      "version": "3.2.1",
+      "path": "node_modules/yoga-layout"
+    },
+    {
+      "name": "zwitch",
+      "version": "2.0.4",
+      "path": "node_modules/zwitch"
+    }
+  ]
+}

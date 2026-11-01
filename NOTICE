@@ -1,0 +1,11 @@
+claude-glm-start-plan
+
+This project includes the built-in agent identity and static instruction block
+from ZCode 3.16.3 in src/zcode-prompt.mjs. ZCode is distributed by Z.ai under
+Apache License 2.0: https://github.com/zai-org/ZCode
+
+The credential reader implements the credential format documented in ZCode's
+apps/zcode-cli/packages/adapters/src/auth/credential-cipher.ts.
+
+The environment block, request adapter, launcher, and tests are separate work.
+This project is an unofficial integration and is not endorsed by Z.ai or Anthropic.

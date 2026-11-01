@@ -1,0 +1,36 @@
+
+ ▐▛███▛█   Claude Code v2.1.314
+▝▜██████▀  GLM-5.3 (Start) with high effort · API Usage Billing
+ ▝▝   ▝▝   ~/projects/claude-glm-start-plan
+
+
+❯ /model
+  ⎿  Set model to GLM-5.3 (Start) for this session only
+
+❯ /model
+  ⎿  Kept model as GLM-5.3 (Start)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔
+   Effort
+
+                        Faster                             Smarter
+                        ────────────────────────────────────────▲─      Ultracode  off
+                        low     medium     high     xhigh      max      Tab to toggle
+
+   May use excessive tokens resulting in long response times or overthinking. Use sparingly for the hardest
+   tasks.
+
+   ←/→ to adjust · Enter to confirm · s for this session only · Esc to cancel

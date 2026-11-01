@@ -1,0 +1,9 @@
+{"model":"GLM-5.3-Flash","effort":"low","pass":true,"code":0,"durationMs":5037,"turns":1}
+{"model":"GLM-5.3-Flash","effort":"high","pass":true,"code":0,"durationMs":5437,"turns":1}
+{"model":"GLM-5.3-Flash","effort":"max","pass":true,"code":0,"durationMs":6624,"turns":1}
+{"model":"GLM-5.3","effort":"low","pass":true,"code":0,"durationMs":5915,"turns":1}
+{"model":"GLM-5.3","effort":"high","pass":true,"code":0,"durationMs":10739,"turns":1}
+{"model":"GLM-5.3","effort":"max","pass":true,"code":0,"durationMs":5761,"turns":1}
+{"model":"GLM-5.3-Flash","effort":"medium","pass":true,"code":0,"durationMs":4934,"turns":1}
+{"model":"GLM-5.3-Flash","effort":"xhigh","pass":true,"code":0,"durationMs":5883,"turns":1}
+{"model":"GLM-5.3-Flash","effort":"high","tool":true,"pass":true,"code":0,"durationMs":15894,"turns":2}

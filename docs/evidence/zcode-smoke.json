@@ -1,0 +1,26 @@
+{
+  "cliVersion": "0.17.1",
+  "sourceCommit": "a60ba6a7e5a06742270ca605f5d2cc2766afa7e1",
+  "response": "ZCODE_FILE_OK",
+  "modelRequestCount": 2,
+  "exitCode": 0,
+  "sessionDatabaseIsolated": true,
+  "requests": [
+    {
+      "provider": "zcode-start",
+      "model": "GLM-5.3-Flash",
+      "variant": "max",
+      "status": "completed",
+      "inputTokens": 13413,
+      "outputTokens": 46
+    },
+    {
+      "provider": "zcode-start",
+      "model": "GLM-5.3-Flash",
+      "variant": "max",
+      "status": "completed",
+      "inputTokens": 13471,
+      "outputTokens": 25
+    }
+  ]
+}
