@@ -10,3 +10,7 @@ Read [README.md](README.md) for behavior and usage. Before changing the source-b
 - Give each new process, listener, or temporary file one lifecycle owner. Verify cleanup on startup failure, cancellation, and exit. Verify actual persistence locations; one upstream directory override does not establish isolation for other stores.
 - Treat upstream upgrades as compatibility work. Reproduce the changed behavior before adapting it, add regression coverage at the shared boundary, and repeat the affected live checks. Picker changes need native TUI verification; successful CLI arguments alone do not prove them.
 - Keep operational facts in the README and version-specific evidence in `docs/`. Update this file only when an agreed architectural boundary changes.
+
+## Git history
+
+Use atomic commits: one independently reviewable and revertible change, including its required tests and documentation. Commit standalone refactors and formatting separately from behavior changes.
