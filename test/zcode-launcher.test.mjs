@@ -15,6 +15,8 @@ test('source CLI receives only a local key and uses its own session database and
     const cwd = join(root, 'project');
     await mkdir(credentials, { recursive: true });
     await mkdir(dist, { recursive: true });
+    await mkdir(join(dist, 'provider'));
+    await writeFile(join(dist, 'provider/zcode-builtin.json'), '{}');
     await mkdir(cwd);
     await writeFile(join(credentials, 'credentials.json'), JSON.stringify({
       zcodejwttoken: 'test-real-jwt', 'oauth:active_provider': 'zai',
@@ -32,9 +34,15 @@ const fs=require('node:fs/promises');
   cwd:process.cwd(),storage:process.env.ZCODE_STORAGE_DIR,db:process.env.ZCODE_SESSION_DB_PATH,
   logs:process.env.ZCODE_LOG_DIR,url:provider.config.api.baseUrl}));
 })().catch(()=>process.exit(1));`);
+    const node = join(root, 'node24');
+    await writeFile(node, `#!/usr/bin/env node
+import {spawnSync} from 'node:child_process';
+if(process.argv.includes('--version')){console.log('v24.22.1');process.exit(0);}
+process.exit(spawnSync(process.execPath,process.argv.slice(2),{stdio:'inherit'}).status??1);
+`, {mode:0o700});
     child = spawn(process.execPath, [fileURLToPath(new URL('../bin/zcode.mjs', import.meta.url)), '--cwd', cwd], {
       env: { ...process.env, ZCODE_DATA_BASE_DIR: root, ZCODE_START_RUNTIME: join(root, 'runtime'),
-        ZCODE_START_NODE: process.execPath, ZCODE_START_DATA_DIR: join(root, 'data') },
+        ZCODE_START_NODE: node, ZCODE_START_DATA_DIR: join(root, 'data') },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     let stdout = '';

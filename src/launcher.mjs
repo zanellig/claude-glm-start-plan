@@ -1,12 +1,13 @@
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { homedir, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCredentialReader } from "./credentials.mjs";
 import { ensureProfile } from "./profile.mjs";
 import { MODELS } from "./protocol.mjs";
 import { startProxy } from "./proxy.mjs";
+import { resolveClaudeRuntime } from "./runtime.mjs";
 
 export function sessionSettings() {
 	return {
@@ -59,6 +60,13 @@ export async function extractSettings(args) {
 export async function launch(args) {
 	const options = await extractSettings(args);
 	args = options.args;
+	const runtime = await resolveClaudeRuntime();
+	if (args.length === 1 && ["--help", "-h", "--version"].includes(args[0])) {
+		return (
+			spawnSync(runtime.command, args, { stdio: "inherit", timeout: 10000 })
+				.status ?? 1
+		);
+	}
 	const readAuth = createCredentialReader();
 	await readAuth();
 	const secret = randomBytes(32).toString("hex");
@@ -80,7 +88,8 @@ export async function launch(args) {
 	const onTerminate = () => onSignal("SIGTERM");
 	try {
 		const profile = await ensureProfile({
-			directory: process.env.CLAUDE_GLM_PROFILE,
+			directory: runtime.profile,
+			sourceDirectory: runtime.sourceProfile,
 		});
 		const env = {
 			...process.env,
@@ -135,7 +144,7 @@ export async function launch(args) {
 		const settingsFile = join(sessionDirectory, "settings.json");
 		await writeFile(settingsFile, JSON.stringify(settings), { mode: 0o600 });
 		child = spawn(
-			process.env.CLAUDE_GLM_CLAUDE || join(homedir(), ".local/bin/claude"),
+			runtime.command,
 			["--settings", settingsFile, "--model", MODELS[0].id, ...args],
 			{ cwd, env, stdio: "inherit" },
 		);

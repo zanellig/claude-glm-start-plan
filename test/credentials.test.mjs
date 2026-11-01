@@ -40,3 +40,18 @@ test('rejects corrupted or mismatched ciphertext without exposing credential mat
   assert.throws(() => decryptCredential(encrypt('private-test-token', 'right'), 'wrong'), /Cannot read/);
   assert.throws(() => decryptCredential('enc:v1:bad.bad.bad', 'secret'), /Unsupported/);
 });
+
+test('resolves a home-relative account-store override for the current user', async () => {
+  const home = await mkdtemp(join(tmpdir(), 'glm-account-location-'));
+  try {
+    const root = join(home, 'account-store/.zcode/v2');
+    await mkdir(root, { recursive: true });
+    await writeFile(join(root, 'credentials.json'), JSON.stringify({
+      zcodejwttoken: encrypt('location-test-token', 'test-secret'),
+    }));
+    const read = createCredentialReader({ home, env: {
+      ZCODE_DATA_BASE_DIR: '~/account-store', ZCODE_CREDENTIAL_SECRET: 'test-secret',
+    } });
+    assert.equal((await read()).token, 'location-test-token');
+  } finally { await rm(home, { recursive: true, force: true }); }
+});

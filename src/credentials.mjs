@@ -1,7 +1,7 @@
 import { createDecipheriv, createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { homedir, platform, userInfo } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 // Matches the existing local credential store. It never writes to that store.
 export function decryptCredential(value, secret) {
@@ -34,7 +34,14 @@ export function createCredentialReader({
 	env = process.env,
 	home = homedir(),
 } = {}) {
-	const root = join(env.ZCODE_DATA_BASE_DIR || home, ".zcode", "v2");
+	const configured = env.ZCODE_DATA_BASE_DIR || home;
+	const base =
+		configured === "~"
+			? home
+			: configured.startsWith("~/") || configured.startsWith("~\\")
+				? join(home, configured.slice(2))
+				: resolve(configured);
+	const root = join(base, ".zcode", "v2");
 	const secret =
 		env.ZCODE_CREDENTIAL_SECRET?.trim() ||
 		`zcode-credential-fallback:${platform()}:${homedir()}:${userInfo().username}`;
@@ -46,7 +53,7 @@ export function createCredentialReader({
 			);
 		} catch {
 			throw new Error(
-				"Sign in to the ZCode desktop application before using claude-glm.",
+				"Sign in to ZCode with your Z.ai account to use its Start allowance.",
 			);
 		}
 		if (

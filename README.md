@@ -1,20 +1,53 @@
-# Claude Code with GLM Start allowance
+# GLM Start allowance in Claude Code
 
-Run `claude-glm` to use GLM-5.3-Flash or GLM-5.3 inside the installed Claude Code application, using the Start allowance from the Z.ai account signed in to ZCode.
+Use GLM-5.3-Flash or GLM-5.3 in Claude Code with the Start allowance of the Z.ai account signed in to ZCode. The optional source-built ZCode CLI uses the same adapter.
+
+## Start from a fresh checkout
+
+You need:
+
+- Node.js 22 or newer to run this integration.
+- Claude Code 2.1.242 or newer on `PATH`, or selected with `CLAUDE_GLM_CLAUDE`. This is the documented minimum for the required [model-picker feature](https://code.claude.com/docs/en/settings-reference#modelpicker); the reference live run used 2.1.314.
+- A Z.ai account signed in to ZCode with an active Start allowance for the model you select.
+
+There are no npm dependencies for the adapter or Claude Code launcher. From this checkout:
 
 ```sh
-claude-glm
+node --test
+node bin/claude-glm.mjs --help
+node bin/claude-glm.mjs
 ```
 
-Open `/model` to select either model. Open `/effort` to select reasoning effort. Flash is the initial model.
+Help and version commands work before signing in and do not create a session profile. A model request requires the ZCode login. Open `/model` to select either model and `/effort` to change reasoning. Flash is the initial model.
 
-The separately installed `zcode` command runs the source-built ZCode CLI with the same Start allowance. See [the CLI build and usage notes](docs/zcode-cli.md).
+An agent can invoke the checkout directly without installing command links:
 
-The model runs through Claude Code's tool execution, permissions, hooks, and session handling. No ZCode agent process runs in this path. The Start gateway requires ZCode system instructions, so the adapter includes two built-in ZCode instruction blocks and preserves Claude Code's original instructions in a system message inside the conversation. This is the compromise approved for this setup; it is not a Claude-instructions-only integration.
+```sh
+node bin/claude-glm.mjs -p 'Explain this project' --output-format json
+node bin/claude-glm.mjs --model GLM-5.3 --effort max
+node bin/claude-glm.mjs --resume
+```
+
+Use this launcher when resuming its sessions. An ordinary `claude` command uses its ordinary profile.
+
+For an optional command link on Linux or macOS, run the following from the checkout. Inspect any existing command before replacing it, and ensure the chosen bin directory is on `PATH`.
+
+```sh
+mkdir -p "$HOME/.local/bin"
+ln -s "$PWD/bin/claude-glm.mjs" "$HOME/.local/bin/claude-glm"
+```
+
+The checkout must remain at its installed location. The [source CLI guide](docs/zcode-cli.md) covers building and running the optional ZCode command. It is not required for Claude Code.
+
+## Instructions and tool execution
+
+Claude Code owns tool execution, permissions, hooks, and session handling. The adapter does not start a ZCode agent in this path.
+
+The Start gateway requires ZCode system instructions. The adapter includes two built-in ZCode blocks and preserves Claude Code's original instructions as a system message inside the conversation. Both instruction sets therefore reach the model. A Claude-instructions-only request is not supported by this integration.
 
 ## Reasoning
 
-The provider supports three effort values. Claude Code displays five, so the adapter maps them as follows.
+The provider supports three effort values. Claude Code displays five:
 
 | Claude Code selection | GLM request |
 | --- | --- |
@@ -26,70 +59,56 @@ The provider supports three effort values. Claude Code displays five, so the ada
 
 GLM thinking stays enabled. Claude Code's thinking-off toggle maps to low effort. There is no separate disabled-reasoning mode in the published GLM-5.3 configuration.
 
-Both models have a declared 1,000,000-token context window. The launcher supplies that window to Claude Code while keeping automatic compaction enabled. Large-context behavior was not load-tested. Claude Code's dollar estimates are not the Start token-bucket balance; check the plan in ZCode for its real allowance and expiry.
+The launcher declares a 1,000,000-token window for both models and keeps automatic compaction enabled. Large-context behavior has not been load-tested. Claude Code's dollar estimates do not measure the Start token buckets; use ZCode to check the account's real allowance and expiry.
 
-## Install
+## Local configuration
 
-Requirements: Node.js 22 or newer, Claude Code 2.1.314 or newer, and a signed-in Z.ai account in ZCode with an active Start allowance. Verified here with Node.js 26.12.1 and Claude Code 2.1.314. There are no npm dependencies for the adapter or Claude Code launcher; the separately built ZCode CLI has its own staged dependencies.
+Runtime discovery lives in `src/runtime.mjs`. Overrides select a command on `PATH` or an executable path, not a shell command with arguments. Paths support `~` and resolve relative to the invocation's working directory.
 
-```sh
-chmod +x bin/claude-glm.mjs
-ln -s "$PWD/bin/claude-glm.mjs" "$HOME/.local/bin/claude-glm"
-```
+| Setting | Purpose | Default |
+| --- | --- | --- |
+| `CLAUDE_GLM_CLAUDE` | Claude Code executable | `claude` on `PATH` |
+| `CLAUDE_GLM_PROFILE` | Dedicated profile for these sessions | `$XDG_CONFIG_HOME/claude-glm/claude` |
+| `CLAUDE_CONFIG_DIR` | Ordinary Claude profile to seed from | `~/.claude` |
+| `ZCODE_DATA_BASE_DIR` | ZCode account data root | ZCode's existing home-directory convention |
+| `ZCODE_CREDENTIAL_SECRET` | Existing ZCode credential-store secret, if configured | ZCode's existing local key derivation |
 
-Run the link command from this checkout. If a command with that name already exists, inspect it before replacing it. The checkout must remain at its installed path.
+When unset, `XDG_CONFIG_HOME` defaults to `~/.config` and `XDG_DATA_HOME` defaults to `~/.local/share`. The source CLI's additional overrides are documented in its guide. No paths from the original author's machine are needed.
 
-Claude Code CLI arguments pass through:
+The dedicated profile copies the selected ordinary profile's settings once. Existing instruction, hook, skill, agent, and plugin definitions are shared through links. Conversations, preferences, and memories stay in the dedicated profile. Later changes to the ordinary settings file are not copied automatically.
 
-```sh
-claude-glm --model GLM-5.3 --effort max
-claude-glm -p 'Explain this project'
-claude-glm --resume
-```
+The adapter reads the current `zcodejwttoken` from the existing ZCode credential store on every model request. It never copies or rewrites that login. Inference goes only to `https://zcode.z.ai/api/v1/zcode-plan/anthropic/v1/messages`; there is no paid-plan fallback.
 
-Use `claude-glm`, including for resuming these sessions. An ordinary `claude` command uses its ordinary profile.
+Each session owns an ephemeral loopback listener with a random local credential. A private temporary settings file contains only that local credential. Normal exit and SIGTERM remove it and close the listener. SIGKILL can leave a small temporary directory, whose credential stops working when its listener exits.
 
-## Local state and credentials
+Removing an installed command link does not sign out of ZCode. Back up the dedicated profile before removing it if its conversations matter.
 
-- The adapter reads the current `zcodejwttoken` from `~/.zcode/v2/credentials.json` for every request. It does not copy or rewrite the login.
-- Inference goes only to `https://zcode.z.ai/api/v1/zcode-plan/anthropic/v1/messages`. There is no paid-plan fallback.
-- The session listens on an ephemeral `127.0.0.1` port with a random local credential. It closes when Claude Code exits. No service runs between sessions.
-- A private temporary settings file contains the local session credential, never the ZCode JWT. It is deleted on normal exit and SIGTERM. A forced SIGKILL can leave that small temporary directory; its credential is useless once its listener exits.
-- Preferences, sessions, and memories use `~/.config/claude-glm/claude`. Initial preferences are copied once from the ordinary Claude settings. Instruction, hook, skill, agent, and plugin definitions are shared through links when present. The initial preference copy does not track later changes to the ordinary settings file.
-
-Overrides: `CLAUDE_GLM_CLAUDE` selects the Claude executable; `CLAUDE_GLM_PROFILE` selects the dedicated profile directory. `ZCODE_DATA_BASE_DIR` and `ZCODE_CREDENTIAL_SECRET` follow ZCode's existing credential-store conventions.
-
-To remove the launcher, remove its `~/.local/bin/claude-glm` link. Keep or back up the dedicated profile if its conversations matter. Removing the checkout or profile does not sign you out of ZCode.
-
-## Verification
+## Verification and compatibility
 
 ```sh
 node --test
 node scripts/smoke-live.mjs --live --tools
 ```
 
-The first command is offline. The second explicitly consumes a small amount of Start allowance. It checks both models at low, high, and max; the medium/xhigh mappings; and a Bash tool round trip. See [recorded live results](docs/evidence/live-smoke.jsonl).
+Offline tests cover synthetic user directories, executable discovery, custom profiles, incompatible runtimes, protocol translation, and lifecycle cleanup. Live checks explicitly consume the caller's Start allowance. They check both models at low/high/max, the additional effort mappings, and a Bash tool round trip.
 
-The actual Claude Code TUI was also used to select GLM-5.3, choose max effort, and send a prompt. The images below render captured terminal cells in a monochrome font; the adjacent text files contain the captured screen contents.
+Linux has been verified with the real clients. The code derives paths from the caller's environment, but macOS and Windows have not received equivalent live validation. The command-link and source-build instructions use a POSIX shell.
 
-![Claude Code model picker](docs/evidence/model-menu.png)
+The bundled ZCode 3.16.3 instruction text and request-version headers are protocol compatibility pins. They are deliberately independent of the desktop version installed on a new user's machine. A gateway change needs a reproduced compatibility check before changing them. The source CLI's build commit is likewise a reproducible compatibility target, not an assumed local installation.
 
-![Claude Code effort picker](docs/evidence/effort-picker.png)
+[The dated reference validation](docs/validation.md) contains results and screenshots from one installation. Files under `docs/evidence/` are reference artifacts; runtime discovery never reads them as local configuration.
 
 ## Modules
 
 ```text
 bin/claude-glm.mjs
-  launcher.mjs     starts Claude and owns adapter cleanup
-    profile.mjs   initializes the separate Claude profile
-    proxy.mjs     authenticates local requests and streams the Start API
-      credentials.mjs  reads the existing login per request
-      protocol.mjs     preserves instructions/tools and maps effort
-        zcode-prompt.mjs  supplies the required built-in blocks
+  launcher.mjs      Claude process and session lifecycle
+    runtime.mjs    executable discovery and local paths
+    profile.mjs    dedicated profile initialization
+    proxy.mjs      local authentication and Start response streaming
+      credentials.mjs  current desktop login
+      protocol.mjs     instruction/tool preservation and effort mapping
+        zcode-prompt.mjs  required compatibility blocks
 ```
-
-The Start gateway currently rejects a normal Claude-only system prompt with HTTP 405 / code 3012. Adding Claude's system blocks after ZCode's top-level blocks is rejected too. Moving them to a conversation system message succeeds. This behavior was verified through real Claude Code requests, not inferred from an error message alone. The gateway can change, and the compatibility text/version headers are pinned to the installed ZCode 3.16.3 behavior.
-
-See [the validation record](docs/validation.md) for the installed-command and native TUI checks.
 
 References: [ZCode source](https://github.com/zai-org/ZCode), [Start account authentication](https://github.com/zai-org/ZCode/blob/main/packages/services/src/model-provider/accountProviderRequestAuthService.ts), [Claude Code model picker settings](https://code.claude.com/docs/en/settings-reference#modelpicker), and [custom context windows](https://code.claude.com/docs/en/model-config#correct-the-window-for-a-gateway-or-custom-model-id).

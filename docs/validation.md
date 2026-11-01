@@ -1,5 +1,7 @@
 # Validation on November 1, 2026
 
+This is a historical reference run from one Linux installation. Its paths, versions, sizes, and quota observations are evidence for that run, not requirements for another machine. Launchers do not read this file or `docs/evidence/` as local configuration. Current setup instructions are in the README and source CLI guide.
+
 ## Claude Code
 
 - Installed command: `~/.local/bin/claude-glm`, linked to this checkout.
@@ -27,3 +29,11 @@ The matrix exercises real upstream requests. The offline tests separately verify
 Eighteen offline tests pass with `node --test`. The real ZCode source build, native dependency provenance, runtime size, and package-age check are documented in [the CLI notes](zcode-cli.md).
 
 The Start gateway and promotional quota are external services. Future authentication expiry, allowance exhaustion, concurrency limits, provider outages, or a changed gateway prompt policy can still reject requests. Those failures are surfaced as errors; there is no paid-provider fallback. This validation does not claim a full security audit, long-context load test, or coverage of every optional Claude Code/ZCode feature.
+
+## Portability follow-up
+
+The launchers now resolve executables and directories from caller configuration and `PATH`. The original installation's Node manager path is no longer a project default. A user-local `node24` alias preserved that installation without recording its target in the repository.
+
+Twenty-seven offline tests pass, including a synthetic user home, an isolated `PATH` with spaces, custom ordinary/dedicated Claude profiles, XDG locations, Node-version rejection, and informational commands without account credentials. Those tests do not depend on the reference installation's command links or staged runtime.
+
+Both real launchers then completed tool round trips through discovered executables. Claude Code returned `PORTABLE_CLAUDE_OK`, and the source CLI read a temporary file and returned `PORTABLE_SOURCE_OK`; each completed two model requests. Request translation, compatibility pins, model-picker rows, and effort mappings were unchanged, so the earlier native TUI evidence remains applicable. Live checks were performed on Linux; macOS and Windows remain unverified.

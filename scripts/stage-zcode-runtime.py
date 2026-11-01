@@ -3,6 +3,7 @@
 Usage: python3 scripts/stage-zcode-runtime.py SOURCE_CHECKOUT NEW_RUNTIME_DIRECTORY
 The destination must not exist. No package-manager or package lifecycle code runs.
 """
+
 import json
 import os
 import pathlib
@@ -38,7 +39,9 @@ def copy_package(path):
     package = json.loads((path / "package.json").read_text())
     destination = output / path.relative_to(root)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(path, destination, ignore=shutil.ignore_patterns("node_modules", "*.map"))
+    shutil.copytree(
+        path, destination, ignore=shutil.ignore_patterns("node_modules", "*.map")
+    )
     for optional, dependencies in (
         (False, package.get("dependencies", {})),
         (True, package.get("optionalDependencies", {})),
@@ -62,12 +65,16 @@ shutil.copytree(cli, cli_output, ignore=shutil.ignore_patterns("*.map"))
 tui_output = output / tui.relative_to(root)
 tui_output.mkdir(parents=True)
 shutil.copy2(tui / "package.json", tui_output / "package.json")
-shutil.copytree(tui / "dist", tui_output / "dist", ignore=shutil.ignore_patterns("*.map"))
+shutil.copytree(
+    tui / "dist", tui_output / "dist", ignore=shutil.ignore_patterns("*.map")
+)
 manifest = json.loads((tui / "package.json").read_text())
 for name in list(manifest["dependencies"]) + ["playwright-core", "koffi"]:
     if name.startswith("@zcode/"):
         continue
-    found = locate(name, tui if name not in ("playwright-core", "koffi") else cli.parent)
+    found = locate(
+        name, tui if name not in ("playwright-core", "koffi") else cli.parent
+    )
     if found is None:
         missing.append(("entrypoint", name))
     else:

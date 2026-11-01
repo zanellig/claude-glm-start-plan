@@ -1,72 +1,87 @@
-# Source-built ZCode CLI
+# Optional source-built ZCode CLI
 
-The installed `zcode` command runs a locally built ZCode CLI with the same Start adapter as `claude-glm`. It does not execute the downloaded AppImage or its bundled agent.
+This command runs the actual source-built ZCode CLI with the same Start adapter used by `claude-glm`. It is independent of the Claude Code launcher and does not use a desktop AppImage's bundled agent.
 
-```sh
-zcode
-zcode --prompt 'Explain this project' --mode plan
-zcode --cwd /path/to/project
-```
+## Prerequisites and discovery
 
-The initial model is `GLM-5.3-Flash`, under the custom provider named `ZCode Start`. Use `/model` in the TUI to change the model or its reasoning options. Only the signed-in account's active Start allowance is available through this provider. Sign in or renew the account through the desktop application's usual flow when needed.
+You need a Z.ai login in the ZCode desktop application, active Start allowance, and a staged source build. The integration itself needs Node.js 22 or newer. The supported source CLI build additionally needs Node **24** for its OpenTUI FFI implementation.
 
-The source CLI reports version **0.17.1**. The containing desktop/source repository reports **3.17.1**; these are separate version numbers.
+The launcher uses a compatible current Node executable first, then checks `node24`, `node-24`, and `node` candidates on `PATH`. Set `ZCODE_START_NODE` to select one explicitly. It validates the selected major version; it never assumes NVM, a particular version-manager layout, or a particular patch release.
 
-## Build and provenance
+| Setting | Purpose | Default |
+| --- | --- | --- |
+| `ZCODE_START_NODE` | Compatible Node executable or command | Discover Node 24 as described above |
+| `ZCODE_START_RUNTIME` | Root of the built/staged source runtime | `$XDG_DATA_HOME/zcode-start/runtime` |
+| `ZCODE_START_DATA_DIR` | Session storage, database, and ordinary logs | `$XDG_DATA_HOME/zcode-start` |
 
-- Repository: [zai-org/ZCode](https://github.com/zai-org/ZCode).
-- Pinned commit: [`a60ba6a7e5a06742270ca605f5d2cc2766afa7e1`](https://github.com/zai-org/ZCode/commit/a60ba6a7e5a06742270ca605f5d2cc2766afa7e1).
-- Source checkout: `~/src/zcode-cli-source`. The tracked source has no local modifications.
-- Package manager: pnpm **10.33.2**, matching the repository, with a frozen lockfile and install lifecycle scripts disabled.
-- Runtime: `~/.local/share/zcode-start/runtime`, about **147 MB**, including the compiled CLI, TUI, license notices, and required external packages. It has no dependency symlinks outside this directory.
-- Node for the ZCode process: existing `~/.nvm/versions/node/v24.22.1/bin/node`. Node 26 fails this TUI's FFI implementation with `Node FFI backend does not support usize`; Node 24 starts it successfully.
-- SHA-256 of the compiled CLI: `2e4e7743111a79463440aacd1ba8c5df03a30608b977cb91ba2da048adc3e29f`.
+`XDG_DATA_HOME` defaults to `~/.local/share`. These overrides are local machine configuration. Do not commit resolved executable paths, credentials, or runtime directories to the project.
 
-The staged bundle was compared byte-for-byte with the output in the source checkout before the build directories were removed. The [build manifest](evidence/zcode-build.json) lists the retained package manifests. This is a source build of ZCode's JavaScript/TypeScript code. Some locked npm dependencies include prebuilt native libraries; they were not rebuilt from their native sources. This was a scoped provenance and startup review, not a complete security audit of the repository or its dependencies.
+## Build from a fresh checkout
 
-The source's root `prepare` hook would run Husky and a CUA build. Install lifecycle scripts were disabled instead. The CLI and its workspace dependencies were built explicitly; Electron was not built. Your seven-day package release-age setting was used during the dependency work. A frozen lockfile bypasses fresh version resolution, so the retained external package versions were checked separately against registry publication times afterward. The [age check](evidence/zcode-runtime-age.json) records the results; the `KoffiConfig` descriptor is an embedded build configuration, not a separately published npm package.
+The supported reference source commit is [`a60ba6a7e5a06742270ca605f5d2cc2766afa7e1`](https://github.com/zai-org/ZCode/commit/a60ba6a7e5a06742270ca605f5d2cc2766afa7e1). Its repository version is 3.17.1, and its agent CLI reports 0.17.1. Source updates require their own compatibility validation.
 
-The original build tree reached about 4 GB. Its generated dependency directories and build outputs were removed after staging. The remaining source checkout is about 321 MB and is not needed to run the installed command. Shared package-manager caches were not indiscriminately pruned.
+Select Node 24 and pnpm **10.33.2** for this pinned source. Use your preferred user-local toolchain manager; the integration does not install toolchains automatically. Verify `node --version` and `pnpm --version` in the shell that will run the build.
 
-## Why the wrapper is needed
-
-The source's standalone account-provider implementation accepts individual Coding Plans and excludes Start plans. A plain source CLI therefore does not expose this signed-in Start account. In addition, the Start gateway rejected the newer source CLI's top-level prompt with code 3012 during the live test.
-
-The launcher uses the CLI's existing personal-provider configuration format. It gives the CLI a loopback URL and an ephemeral local session key, with Flash as its default. The adapter reads the desktop JWT on each upstream request and supplies the accepted built-in system blocks. The source CLI's own instructions remain in the conversation as a system message. This requires no patch to ZCode's tracked source.
-
-```text
-zcode launcher
-  source-built CLI on Node 24
-    temporary personal provider, local key only
-      session adapter
-        current desktop JWT
-        Start allowance endpoint
-```
-
-The temporary provider file is mode `0600` and is removed on exit. It never contains the desktop JWT. Session storage, the session database, and ordinary diagnostic logs live under `~/.local/share/zcode-start/.zcode`. The wrapper sets the source's separate storage and database environment variables explicitly. The source CLI still uses its standard `~/.zcode/cli` locations for global user configuration, plugin definitions, and model-input/output diagnostic recordings. Its login source remains the desktop application's credential store.
-
-The initial CLI smoke tests used the source's default shared session database before these storage overrides were added. They left test conversations there; existing conversations were not removed or restored. The final wrapper was verified against its dedicated database after the correction.
-
-Overrides: `ZCODE_START_NODE` selects a compatible Node executable, `ZCODE_START_RUNTIME` selects the staged runtime directory, and `ZCODE_START_DATA_DIR` selects the separate CLI state directory.
-
-## Rebuild
-
-Use the pinned source and the pinned pnpm version. Install only the CLI dependency workspace with scripts disabled, then build the CLI dependency workspace explicitly. The dependency graph is still large even with this filter.
+From the integration checkout, choose an unused source directory:
 
 ```sh
-git clone https://github.com/zai-org/ZCode.git ~/src/zcode-cli-source
-cd ~/src/zcode-cli-source
-git checkout a60ba6a7e5a06742270ca605f5d2cc2766afa7e1
-# Using pnpm 10.33.2 and Node 24:
+glm_project_dir="$PWD"
+zcode_source_dir="$HOME/src/zcode-cli-source"
+mkdir -p "$zcode_source_dir"
+git clone https://github.com/zai-org/ZCode.git "$zcode_source_dir"
+git -C "$zcode_source_dir" checkout a60ba6a7e5a06742270ca605f5d2cc2766afa7e1
+cd "$zcode_source_dir"
 pnpm --filter @zcode/cli... install --frozen-lockfile --ignore-scripts
 pnpm --filter @zcode/cli... build
 ```
 
-Run the staging helper from this integration checkout, with a new destination:
+Install lifecycle scripts remain disabled; build the CLI workspace explicitly. The dependency tree is large even with this filter. Apply your own dependency and release-age policies. A frozen lockfile preserves dependency versions but does not perform a new release-age resolution.
+
+Return to this integration checkout and stage into a new directory:
 
 ```sh
-python3 scripts/stage-zcode-runtime.py ~/src/zcode-cli-source ~/.local/share/zcode-start/runtime-new
-ZCODE_START_RUNTIME=~/.local/share/zcode-start/runtime-new zcode version
+cd "$glm_project_dir"
+zcode_runtime_dir="${XDG_DATA_HOME:-$HOME/.local/share}/zcode-start/runtime"
+python3 scripts/stage-zcode-runtime.py "$zcode_source_dir" "$zcode_runtime_dir"
+node bin/zcode.mjs version
+node bin/zcode.mjs
 ```
 
-Test the TUI and a real tool round trip with the new runtime before replacing the active one. The staging helper follows the already-installed package closure and does not perform another package resolution. No system-wide package installation is needed.
+The staging helper copies the compiled CLI, TUI, notices, and installed external dependency closure without another package resolution. Its destination must not already exist. It supports the pinned source layout and was exercised on Linux; other source layouts need separate checks.
+
+If staging elsewhere, select it explicitly:
+
+```sh
+ZCODE_START_RUNTIME=/path/to/staged-runtime node bin/zcode.mjs version
+```
+
+Some npm dependencies include prebuilt native libraries. Building ZCode's JavaScript/TypeScript locally does not rebuild every native dependency or constitute a complete security audit.
+
+## Use from a person or agent session
+
+Run directly from the integration checkout:
+
+```sh
+node bin/zcode.mjs --help
+node bin/zcode.mjs --cwd /path/to/project --mode plan --prompt 'Explain this project'
+node bin/zcode.mjs --cwd /path/to/project
+```
+
+Help and version work without account credentials. Model requests require the desktop login. The initial provider is `ZCode Start` with `GLM-5.3-Flash`; use `/model` in the TUI to select a model and its reasoning options.
+
+An optional alias can avoid colliding with an existing `zcode` installation. From the integration checkout:
+
+```sh
+mkdir -p "$HOME/.local/bin"
+ln -s "$PWD/bin/zcode.mjs" "$HOME/.local/bin/zcode-start"
+```
+
+Ensure that directory is on `PATH` and inspect an existing alias before replacing it. Existing installations may retain their `zcode` alias; the wrapper works under either name.
+
+## Integration and state
+
+The supported source CLI's standalone account catalog excludes Start plans. Its newer top-level prompt was also rejected by the Start gateway in the reference check. The wrapper uses its existing personal-provider format, supplying a loopback URL and a local session key. The shared adapter reads the desktop JWT per request and supplies the accepted system blocks. The source CLI's instructions remain in a conversation system message. Upstream tracked source needs no patch.
+
+The provider file is mode `0600` and contains only the local session key. It is removed on exit. The launcher explicitly selects separate session storage, database, and ordinary log paths. The source CLI still uses its standard `~/.zcode/cli` locations for global configuration, plugin definitions, and model-input/output diagnostic recordings. The desktop application's store remains the login source.
+
+Test a staged runtime's TUI and a real tool round trip before deleting build dependencies or replacing a working runtime. Keep runtime artifacts outside this Git checkout. [The reference validation](validation.md) records one build's hashes, package manifests, test results, and retained sizes; those are historical evidence, not required local state.

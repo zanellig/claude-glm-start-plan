@@ -2,10 +2,18 @@ import { lstat, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-export async function ensureProfile({ home = homedir(), directory } = {}) {
+export async function ensureProfile({
+	home = homedir(),
+	directory,
+	sourceDirectory,
+} = {}) {
 	const profile = directory || join(home, ".config/claude-glm/claude");
+	const original = sourceDirectory || join(home, ".claude");
+	if (profile === original)
+		throw new Error(
+			"CLAUDE_GLM_PROFILE must be separate from the source Claude profile.",
+		);
 	await mkdir(profile, { recursive: true, mode: 0o700 });
-	const original = join(home, ".claude");
 	try {
 		await writeFile(
 			join(profile, "settings.json"),

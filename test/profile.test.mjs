@@ -32,3 +32,16 @@ test('combines extra settings into one argument so routing settings cannot be dr
   assert.equal(result.settings.env.TEST, 'value');
   await assert.rejects(extractSettings(['--settings']), /requires JSON/);
 });
+
+test('seeds from an explicitly selected source profile and rejects using that profile as the destination', async () => {
+  const root = await mkdtemp(join(tmpdir(), 'glm-profile-source-'));
+  try {
+    const source = join(root, 'ordinary-profile');
+    const target = join(root, 'isolated-profile');
+    await mkdir(source);
+    await writeFile(join(source, 'settings.json'), '{"theme":"light"}');
+    await ensureProfile({ directory: target, sourceDirectory: source });
+    assert.equal(JSON.parse(await readFile(join(target, 'settings.json'), 'utf8')).theme, 'light');
+    await assert.rejects(ensureProfile({ directory: source, sourceDirectory: source }), /must be separate/);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});

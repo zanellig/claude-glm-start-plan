@@ -1,10 +1,11 @@
 import { spawn, spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { access, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
-import { homedir, tmpdir } from "node:os";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createCredentialReader } from "./credentials.mjs";
 import { startProxy } from "./proxy.mjs";
+import { resolveZcodeRuntime } from "./runtime.mjs";
 
 export async function launchZcode(args) {
 	const cwdFlag = args.indexOf("--cwd");
@@ -18,22 +19,14 @@ export async function launchZcode(args) {
 				? inlineCwd.slice(6)
 				: process.cwd(),
 	);
-	const base =
-		process.env.ZCODE_START_DATA_DIR ||
-		join(homedir(), ".local/share/zcode-start");
-	const runtime =
-		process.env.ZCODE_START_RUNTIME ||
-		join(homedir(), ".local/share/zcode-start/runtime");
-	const cli = join(runtime, "apps/zcode-cli/packages/cli/dist/zcode.cjs");
-	const node =
-		process.env.ZCODE_START_NODE ||
-		join(homedir(), ".nvm/versions/node/v24.22.1/bin/node");
-	try {
-		await access(cli);
-		await access(node);
-	} catch {
-		throw new Error(
-			"Source-built runtime or Node 24 is missing. See docs/zcode-cli.md.",
+	const { base, node, cli, builtin } = await resolveZcodeRuntime({ cwd });
+	if (
+		args.length === 1 &&
+		["--help", "-h", "--version", "-v", "version"].includes(args[0])
+	) {
+		return (
+			spawnSync(node, [cli, ...args], { cwd, stdio: "inherit", timeout: 10000 })
+				.status ?? 1
 		);
 	}
 	const readAuth = createCredentialReader();
@@ -91,10 +84,7 @@ export async function launchZcode(args) {
 			ZCODE_STORAGE_DIR: join(base, ".zcode"),
 			ZCODE_SESSION_DB_PATH: join(base, ".zcode/cli/db/db.sqlite"),
 			ZCODE_LOG_DIR: join(base, ".zcode/cli/log"),
-			ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: join(
-				runtime,
-				"apps/zcode-cli/packages/cli/dist/provider/zcode-builtin.json",
-			),
+			ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: builtin,
 			ZCODE_PERSONAL_PROVIDER_CONFIG_FILE: personal,
 		};
 		// The CLI gets only the local session key, never the desktop JWT. Its state

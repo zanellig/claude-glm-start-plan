@@ -17,6 +17,7 @@ async function fixture(wait) {
   const fake = join(root, 'fake-claude.mjs');
   await writeFile(fake, `#!/usr/bin/env node
 import {readFile,stat} from 'node:fs/promises';
+if(process.argv.includes('--version')){console.log('2.1.314 (Claude Code)');process.exit(0);}
 const settingsFile=process.argv[process.argv.indexOf('--settings')+1];
 const settings=JSON.parse(await readFile(settingsFile,'utf8'));
 const r=await fetch(process.env.ANTHROPIC_BASE_URL+'/v1/models',{headers:{authorization:'Bearer '+process.env.ANTHROPIC_AUTH_TOKEN}});
@@ -25,7 +26,7 @@ ${wait ? 'setInterval(()=>{},1000);' : ''}
 `, { mode: 0o700 });
   const child = spawn(process.execPath, [entry], { cwd: root, env: {
     ...process.env, ZCODE_DATA_BASE_DIR: root, CLAUDE_GLM_PROFILE: join(root, 'profile'),
-    CLAUDE_GLM_CLAUDE: fake,
+    CLAUDE_GLM_CLAUDE: fake, CLAUDE_CONFIG_DIR: join(root, 'ordinary-profile'),
   }, stdio: ['ignore', 'pipe', 'pipe'] });
   let stdout = '';
   let stderr = '';
