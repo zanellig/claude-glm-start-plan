@@ -4,8 +4,24 @@
   "private": true,
   "type": "module",
   "description": "Run Claude Code with GLM models from a signed-in ZCode Start allowance",
-  "engines": { "node": ">=22" },
-  "bin": { "claude-glm": "bin/claude-glm.mjs", "zcode": "bin/zcode.mjs" },
-  "scripts": { "test": "node --test", "start": "node bin/claude-glm.mjs" },
-  "license": "Apache-2.0"
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "claude-glm": "bin/claude-glm.mjs",
+    "zcode": "bin/zcode.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "start": "node bin/claude-glm.mjs",
+    "prepare": "git config --local core.hooksPath .githooks",
+    "check": "biome check .",
+    "check:staged": "biome check --staged --no-errors-on-unmatched",
+    "lint": "biome lint .",
+    "format": "biome format --write ."
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.6.4"
+  }
 }

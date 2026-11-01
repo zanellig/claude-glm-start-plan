@@ -8,11 +8,11 @@ You need a Z.ai login in the ZCode desktop application, active Start allowance, 
 
 The launcher uses a compatible current Node executable first, then checks `node24`, `node-24`, and `node` candidates on `PATH`. Set `ZCODE_START_NODE` to select one explicitly. It validates the selected major version; it never assumes NVM, a particular version-manager layout, or a particular patch release.
 
-| Setting | Purpose | Default |
-| --- | --- | --- |
-| `ZCODE_START_NODE` | Compatible Node executable or command | Discover Node 24 as described above |
-| `ZCODE_START_RUNTIME` | Root of the built/staged source runtime | `$XDG_DATA_HOME/zcode-start/runtime` |
-| `ZCODE_START_DATA_DIR` | Session storage, database, and ordinary logs | `$XDG_DATA_HOME/zcode-start` |
+| Setting                | Purpose                                      | Default                              |
+| ---------------------- | -------------------------------------------- | ------------------------------------ |
+| `ZCODE_START_NODE`     | Compatible Node executable or command        | Discover Node 24 as described above  |
+| `ZCODE_START_RUNTIME`  | Root of the built/staged source runtime      | `$XDG_DATA_HOME/zcode-start/runtime` |
+| `ZCODE_START_DATA_DIR` | Session storage, database, and ordinary logs | `$XDG_DATA_HOME/zcode-start`         |
 
 `XDG_DATA_HOME` defaults to `~/.local/share`. These overrides are local machine configuration. Do not commit resolved executable paths, credentials, or runtime directories to the project.
 

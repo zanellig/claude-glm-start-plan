@@ -32,8 +32,9 @@ export function normalizeEvents() {
 	return new TransformStream({
 		transform(chunk, controller) {
 			pending += decoder.decode(chunk, { stream: true });
-			let delimiter;
-			while ((delimiter = /\r\n\r\n|\n\n|\r\r/.exec(pending))) {
+			while (true) {
+				const delimiter = /\r\n\r\n|\n\n|\r\r/.exec(pending);
+				if (!delimiter) break;
 				const end = delimiter.index + delimiter[0].length;
 				emit(pending.slice(0, end), controller);
 				pending = pending.slice(end);

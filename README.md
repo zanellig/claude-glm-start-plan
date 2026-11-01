@@ -50,12 +50,12 @@ The Start gateway requires ZCode system instructions. The adapter includes two b
 The provider supports three effort values. Claude Code displays five:
 
 | Claude Code selection | GLM request |
-| --- | --- |
-| low | low |
-| medium | high |
-| high | high |
-| xhigh | max |
-| max | max |
+| --------------------- | ----------- |
+| low                   | low         |
+| medium                | high        |
+| high                  | high        |
+| xhigh                 | max         |
+| max                   | max         |
 
 GLM thinking stays enabled. Claude Code's thinking-off toggle maps to low effort. There is no separate disabled-reasoning mode in the published GLM-5.3 configuration.
 
@@ -65,13 +65,13 @@ The launcher declares a 1,000,000-token window for both models and keeps automat
 
 Runtime discovery lives in `src/runtime.mjs`. Overrides select a command on `PATH` or an executable path, not a shell command with arguments. Paths support `~` and resolve relative to the invocation's working directory.
 
-| Setting | Purpose | Default |
-| --- | --- | --- |
-| `CLAUDE_GLM_CLAUDE` | Claude Code executable | `claude` on `PATH` |
-| `CLAUDE_GLM_PROFILE` | Dedicated profile for these sessions | `$XDG_CONFIG_HOME/claude-glm/claude` |
-| `CLAUDE_CONFIG_DIR` | Ordinary Claude profile to seed from | `~/.claude` |
-| `ZCODE_DATA_BASE_DIR` | ZCode account data root | ZCode's existing home-directory convention |
-| `ZCODE_CREDENTIAL_SECRET` | Existing ZCode credential-store secret, if configured | ZCode's existing local key derivation |
+| Setting                   | Purpose                                               | Default                                    |
+| ------------------------- | ----------------------------------------------------- | ------------------------------------------ |
+| `CLAUDE_GLM_CLAUDE`       | Claude Code executable                                | `claude` on `PATH`                         |
+| `CLAUDE_GLM_PROFILE`      | Dedicated profile for these sessions                  | `$XDG_CONFIG_HOME/claude-glm/claude`       |
+| `CLAUDE_CONFIG_DIR`       | Ordinary Claude profile to seed from                  | `~/.claude`                                |
+| `ZCODE_DATA_BASE_DIR`     | ZCode account data root                               | ZCode's existing home-directory convention |
+| `ZCODE_CREDENTIAL_SECRET` | Existing ZCode credential-store secret, if configured | ZCode's existing local key derivation      |
 
 When unset, `XDG_CONFIG_HOME` defaults to `~/.config` and `XDG_DATA_HOME` defaults to `~/.local/share`. The source CLI's additional overrides are documented in its guide. No paths from the original author's machine are needed.
 
@@ -84,6 +84,21 @@ Each session owns an ephemeral loopback listener with a random local credential.
 Removing an installed command link does not sign out of ZCode. Back up the dedicated profile before removing it if its conversations matter.
 
 ## Verification and compatibility
+
+For development, run `npm ci` to install the pinned Biome dev dependency and
+activate this checkout's Git hooks. The pre-commit hook checks linting, formatting,
+and import organization on staged files. Files under `test/` are excluded from
+all Biome commands. The integration still has no runtime npm dependencies.
+
+```sh
+npm run check
+npm run lint
+npm run format
+```
+
+If a commit fails its Biome check, fix the reported issues, use `npm run format`
+for formatting changes, and stage the changes before committing again. The hook
+checks the working-tree contents of staged paths and does not modify or stage files.
 
 ```sh
 node --test
